@@ -1,6 +1,9 @@
 export class PedidoService {
-  constructor() {
+  // DIP
+  constructor(repositorio, notificador) {
     this.pedidos = [];
+    this.repositorio = repositorio;
+    this.notificador = notificador;
   }
 
   registrar(pedido, tipoCliente, tipoEnvio) {
@@ -31,9 +34,9 @@ export class PedidoService {
     total += costoEnvio;
     this.pedidos.push({ pedido, total });
 
-    localStorage.setItem("pedidos", JSON.stringify(this.pedidos));
     // SRP: responsabilidad a la clase correspondiente.
-    this.notificar(pedido.cliente.email);
+    this.repositorio.guardar(pedido, total);
+    this.notificador.enviar(pedido.cliente.email);
 
     return total;
   }
