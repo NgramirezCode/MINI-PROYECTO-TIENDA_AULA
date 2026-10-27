@@ -2,8 +2,12 @@ import "./styles.css";
 import { Producto } from "./models/Producto.js";
 import { Pedido } from "./models/Pedido.js";
 import { PedidoService } from "./services/PedidoService.js";
+import { PedidoRepository } from "./repositories/LocalStoragePedidoRepository.js";
+import { Notificador } from "./notifications/EmailNotificador.js";
 
-const service = new PedidoService();
+const repositorio = new PedidoRepository();
+const notificador = new Notificador();
+const service = new PedidoService(repositorio, notificador);
 const catalogo = [
   new Producto(1, "Cuaderno", 3000),
   new Producto(2, "Lapicera", 1000),
@@ -78,7 +82,10 @@ function renderCarrito() {
     item.append(texto, boton);
     listaCarrito.append(item);
   });
-  const subtotal = carrito.reduce((total, producto) => total + producto.precio, 0);
+  const subtotal = carrito.reduce(
+    (total, producto) => total + producto.precio,
+    0,
+  );
   document.querySelector("#subtotal").textContent = moneda.format(subtotal);
 }
 
@@ -102,7 +109,9 @@ pedidoForm.addEventListener("submit", (event) => {
   const nombre = nombreCliente.value.trim();
   const email = emailCliente.value.trim();
   if (!nombre || !email || carrito.length === 0) {
-    informarError("Completá los datos del cliente y agregá al menos un producto.");
+    informarError(
+      "Completá los datos del cliente y agregá al menos un producto.",
+    );
     return;
   }
   const pedido = new Pedido({ nombre, email }, [...carrito]);
