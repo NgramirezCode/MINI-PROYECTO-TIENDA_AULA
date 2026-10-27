@@ -32,7 +32,8 @@ export class PedidoService {
     this.pedidos.push({ pedido, total });
 
     localStorage.setItem("pedidos", JSON.stringify(this.pedidos));
-    console.log(`Email enviado a ${pedido.cliente.email}`);
+    // SRP: responsabilidad a la clase correspondiente.
+    this.notificar(pedido.cliente.email);
 
     return total;
   }
