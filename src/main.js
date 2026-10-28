@@ -4,15 +4,31 @@ import { Pedido } from "./models/Pedido.js";
 import { PedidoService } from "./services/PedidoService.js";
 import { PedidoRepository } from "./repositories/LocalStoragePedidoRepository.js";
 import { Notificador } from "./notifications/EmailNotificador.js";
+import { DescuentoNormal } from "./descuentos/DescuentoNormal.js";
+import { DescuentoPremium } from "./descuentos/DescuentoPremium.js";
+import { DescuentoVIP } from "./descuentos/DescuentoVIP.js";
 
 const repositorio = new PedidoRepository();
 const notificador = new Notificador();
-const service = new PedidoService(repositorio, notificador);
+
+const estrategiasDeDescuento = {
+  normal: new DescuentoNormal(),
+  premium: new DescuentoPremium(),
+  vip: new DescuentoVIP(),
+};
+
+const service = new PedidoService(
+  repositorio,
+  notificador,
+  estrategiasDeDescuento,
+);
+
 const catalogo = [
   new Producto(1, "Cuaderno", 3000),
   new Producto(2, "Lapicera", 1000),
   new Producto(3, "Mochila", 12000),
 ];
+
 const carrito = [];
 const moneda = new Intl.NumberFormat("es-AR", {
   style: "currency",

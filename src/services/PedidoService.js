@@ -1,9 +1,10 @@
 export class PedidoService {
   // DIP
-  constructor(repositorio, notificador) {
+  constructor(repositorio, notificador, descuentos) {
     this.pedidos = [];
     this.repositorio = repositorio;
     this.notificador = notificador;
+    this.descuentos = descuentos;
   }
 
   registrar(pedido, tipoCliente, tipoEnvio) {
@@ -13,12 +14,10 @@ export class PedidoService {
       total += producto.precio;
     }
 
-    if (tipoCliente === "premium") {
-      total *= 0.9;
-    }
+    const descuento = this.descuentos[tipoCliente];
 
-    if (tipoCliente === "vip") {
-      total *= 0.8;
+    if (descuento) {
+      total = descuento.aplicar(total);
     }
 
     let costoEnvio = 0;
