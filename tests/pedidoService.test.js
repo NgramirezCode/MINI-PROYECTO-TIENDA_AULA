@@ -7,11 +7,18 @@ import { Notificador } from "../src/notifications/EmailNotificador.js";
 import { DescuentoNormal } from "../src/descuentos/DescuentoNormal.js";
 import { DescuentoPremium } from "../src/descuentos/DescuentoPremium.js";
 import { DescuentoVIP } from "../src/descuentos/DescuentoVIP.js";
+import { EnvioNormal } from "../src/envios/EnvioNormal.js";
+import { EnvioExpress } from "../src/envios/EnvioExpress.js";
 
 const descuentosBase = {
   normal: new DescuentoNormal(),
   premium: new DescuentoPremium(),
   vip: new DescuentoVIP(),
+};
+
+const enviosBase = {
+  normal: new EnvioNormal(),
+  express: new EnvioExpress(),
 };
 
 describe("PedidoService: caracterizacion antes de refactorizar", () => {
@@ -23,6 +30,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "normal", "normal");
     expect(total).toBe(4000); // 3000 + 1000
@@ -36,6 +44,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "premium", "normal");
     expect(total).toBe(4600); // (4000 * 0.9) + 1000
@@ -49,6 +58,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "vip", "normal");
     expect(total).toBe(4200); // (4000 * 0.8) + 1000
@@ -62,6 +72,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "normal", "express");
     expect(total).toBe(5000); // 3000 + 2000
@@ -75,6 +86,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "vip", "express");
     expect(total).toBe(5200); // (4000 * 0.8) + 2000
@@ -88,6 +100,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "premium", "express");
     expect(total).toBe(2900); // (1000 * 0.9) + 2000
@@ -101,6 +114,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     const total = service.registrar(pedido, "normal", "normal");
     expect(total).toBeCloseTo(1010.55);
@@ -114,6 +128,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
     service.registrar(pedido, "normal", "normal");
     expect(service.pedidos.length).toBe(1);
@@ -131,6 +146,7 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
       new PedidoRepository(),
       new Notificador(),
       descuentosBase,
+      enviosBase,
     );
 
     service.registrar(pedido1, "normal", "normal");

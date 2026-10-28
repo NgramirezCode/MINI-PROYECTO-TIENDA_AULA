@@ -7,21 +7,22 @@ import { Notificador } from "./notifications/EmailNotificador.js";
 import { DescuentoNormal } from "./descuentos/DescuentoNormal.js";
 import { DescuentoPremium } from "./descuentos/DescuentoPremium.js";
 import { DescuentoVIP } from "./descuentos/DescuentoVIP.js";
+import { EnvioNormal } from "./envios/EnvioNormal.js";
+import { EnvioExpress } from "./envios/EnvioExpress.js";
 
 const repositorio = new PedidoRepository();
 const notificador = new Notificador();
-
-const estrategiasDeDescuento = {
+const envios = {
+  normal: new EnvioNormal(),
+  express: new EnvioExpress(),
+};
+const descuentos = {
   normal: new DescuentoNormal(),
   premium: new DescuentoPremium(),
   vip: new DescuentoVIP(),
 };
 
-const service = new PedidoService(
-  repositorio,
-  notificador,
-  estrategiasDeDescuento,
-);
+const service = new PedidoService(repositorio, notificador, descuentos, envios);
 
 const catalogo = [
   new Producto(1, "Cuaderno", 3000),
