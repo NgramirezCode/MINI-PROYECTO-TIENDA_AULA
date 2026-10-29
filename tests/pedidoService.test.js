@@ -9,11 +9,13 @@ import { DescuentoPremium } from "../src/descuentos/DescuentoPremium.js";
 import { DescuentoVIP } from "../src/descuentos/DescuentoVIP.js";
 import { EnvioNormal } from "../src/envios/EnvioNormal.js";
 import { EnvioExpress } from "../src/envios/EnvioExpress.js";
+import { DescuentoMayorista } from "../src/descuentos/DescuentoMayorista.js";
 
 const descuentosBase = {
   normal: new DescuentoNormal(),
   premium: new DescuentoPremium(),
   vip: new DescuentoVIP(),
+  mayorista: new DescuentoMayorista(),
 };
 
 const enviosBase = {
@@ -153,5 +155,18 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
     service.registrar(pedido2, "normal", "normal");
 
     expect(service.pedidos.length).toBe(2);
+  });
+  test("cliente mayorista recibe 25% de descuento", () => {
+    const pedido = new Pedido({ nombre: "Local", email: "local@ejemplo.com" }, [
+      new Producto(1, "Item", 4000),
+    ]);
+    const service = new PedidoService(
+      new PedidoRepository(),
+      new Notificador(),
+      descuentosBase,
+      enviosBase,
+    );
+    const total = service.registrar(pedido, "mayorista", "normal");
+    expect(total).toBe(4000); // (4000 * 0.75) + 1000
   });
 });

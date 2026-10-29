@@ -9,6 +9,7 @@ import { DescuentoPremium } from "./descuentos/DescuentoPremium.js";
 import { DescuentoVIP } from "./descuentos/DescuentoVIP.js";
 import { EnvioNormal } from "./envios/EnvioNormal.js";
 import { EnvioExpress } from "./envios/EnvioExpress.js";
+import { DescuentoMayorista } from "./descuentos/DescuentoMayorista.js";
 
 const repositorio = new PedidoRepository();
 const notificador = new Notificador();
@@ -20,6 +21,7 @@ const descuentos = {
   normal: new DescuentoNormal(),
   premium: new DescuentoPremium(),
   vip: new DescuentoVIP(),
+  mayorista: new DescuentoMayorista(),
 };
 
 const service = new PedidoService(repositorio, notificador, descuentos, envios);
