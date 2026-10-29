@@ -10,12 +10,14 @@ import { DescuentoVIP } from "./descuentos/DescuentoVIP.js";
 import { EnvioNormal } from "./envios/EnvioNormal.js";
 import { EnvioExpress } from "./envios/EnvioExpress.js";
 import { DescuentoMayorista } from "./descuentos/DescuentoMayorista.js";
+import { EnvioRetiroLocal } from "./envios/EnvioRetiroLocal.js";
 
 const repositorio = new PedidoRepository();
 const notificador = new Notificador();
 const envios = {
   normal: new EnvioNormal(),
   express: new EnvioExpress(),
+  retiro: new EnvioRetiroLocal(),
 };
 const descuentos = {
   normal: new DescuentoNormal(),

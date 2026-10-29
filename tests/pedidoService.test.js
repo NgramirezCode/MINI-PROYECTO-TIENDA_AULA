@@ -10,6 +10,7 @@ import { DescuentoVIP } from "../src/descuentos/DescuentoVIP.js";
 import { EnvioNormal } from "../src/envios/EnvioNormal.js";
 import { EnvioExpress } from "../src/envios/EnvioExpress.js";
 import { DescuentoMayorista } from "../src/descuentos/DescuentoMayorista.js";
+import { EnvioRetiroLocal } from "../src/envios/EnvioRetiroLocal.js";
 
 const descuentosBase = {
   normal: new DescuentoNormal(),
@@ -21,6 +22,7 @@ const descuentosBase = {
 const enviosBase = {
   normal: new EnvioNormal(),
   express: new EnvioExpress(),
+  retiro: new EnvioRetiroLocal(),
 };
 
 describe("PedidoService: caracterizacion antes de refactorizar", () => {
@@ -168,5 +170,32 @@ describe("PedidoService: caracterizacion antes de refactorizar", () => {
     );
     const total = service.registrar(pedido, "mayorista", "normal");
     expect(total).toBe(4000); // (4000 * 0.75) + 1000
+  });
+  test("retiro en local no suma costo de envio", () => {
+    const pedido = new Pedido({ nombre: "Ana", email: "ana@ejemplo.com" }, [
+      new Producto(1, "Item", 3000),
+    ]);
+    const service = new PedidoService(
+      new PedidoRepository(),
+      new Notificador(),
+      descuentosBase,
+      enviosBase,
+    );
+    const total = service.registrar(pedido, "normal", "retiro");
+    expect(total).toBe(3000); // 3000 + 0
+  });
+
+  test("cliente mayorista con retiro en local", () => {
+    const pedido = new Pedido({ nombre: "local", email: "local@ejemplo.com" }, [
+      new Producto(1, "Item", 4000),
+    ]);
+    const service = new PedidoService(
+      new PedidoRepository(),
+      new Notificador(),
+      descuentosBase,
+      enviosBase,
+    );
+    const total = service.registrar(pedido, "mayorista", "retiro");
+    expect(total).toBe(3000);
   });
 });

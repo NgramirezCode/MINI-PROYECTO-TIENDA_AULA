@@ -1,5 +1,6 @@
+// 25% de descuento
 export class DescuentoMayorista {
   aplicar(total) {
-    return total * 0.75; // 25% de descuento
+    return total * 0.75;
   }
 }
