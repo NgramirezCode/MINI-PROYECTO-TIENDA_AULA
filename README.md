@@ -53,14 +53,14 @@ deben copiar ni reemplaza las pruebas unitarias.
 ### Comportamiento inicial
 
 | Tipo de cliente | Descuento sobre productos |
-| --- | --- |
-| Normal | 0% |
-| Premium | 10% |
-| VIP | 20% |
+| --------------- | ------------------------- |
+| Normal          | 0%                        |
+| Premium         | 10%                       |
+| VIP             | 20%                       |
 
-| Envio | Costo |
-| --- | --- |
-| Normal | $1000 |
+| Envio   | Costo |
+| ------- | ----- |
+| Normal  | $1000 |
 | Express | $2000 |
 
 El servicio suma los precios, aplica el descuento y **despues** agrega el envio.
@@ -206,11 +206,24 @@ No alcanza con un unico commit "proyecto terminado".
 
 ### Completar por el equipo en su entrega
 
-- Integrantes:
-- Descripcion del sistema:
-- Problemas detectados y evidencia:
-- Refactorizaciones realizadas y por que:
-- Principios utilizados y decisiones que los justifican:
-- Comportamientos preservados y pruebas que lo demuestran:
-- Cambios de comportamiento acordados, si los hubo:
-- Como ejecutar la aplicacion y los tests:
+- **Integrantes:** Nicolás Gabriel Ramirez
+- **Descripcion del sistema:** Es un sistema de gestión para una tienda que permite registrar productos, crear pedidos, calcular el total aplicando descuentos según el tipo de cliente, sumar el costo de envío, guardar el historial y notificar al usuario de la compra.
+- **Problemas detectados y evidencia:** En la Etapa 1: La clase `PedidoService.js` estaba acoplada a la infraestructura (usaba directamente `localStorage` y `console.log`). Además, el método `registrar` violaba el SRP al tener demasiadas responsabilidades (calcular, guardar, notificar). Por último, los cálculos de descuento y envío dependían de múltiples sentencias `if`, lo que obligaría a modificar la clase principal cada vez que surgiera una nueva regla de negocio (violando OCP).
+- **Refactorizaciones realizadas y por que:**
+
+1. Extraje la lógica de guardado a la clase `LocalStoragePedidoRepository` y la de mensajes a `EmailNotificador`. Porque el servicio no debe saber "cómo" se guardan o envían los datos.
+2. Implemente el patrón Strategy (polimorfismo) para los descuentos y los envíos, creando clases separadas (ej. `DescuentoPremium`, `EnvioExpress`). Se hizo para que al agregar el futuro "Cliente Mayorista" no se tenga que tocar el código del servicio.
+
+- **Principios utilizados y decisiones que los justifican:**
+  - **SRP (Responsabilidad Única):** Aplicado al separar la persistencia y la notificación. Ahora el `PedidoService` solo coordina el pedido.
+  - **OCP (Abierto/Cerrado):** Aplicado en los cálculos. `PedidoService` quedó cerrado a la modificación, pero abierto a la extensión (se pueden agregar descuentos creando nuevas clases).
+  - **DIP (Inversión de Dependencias):** El servicio ya no depende de detalles de bajo nivel. Ahora se integró el `repositorio`, el `notificador` y las estrategias a través del constructor.
+- **Comportamientos preservados y pruebas que lo demuestran:**
+  Se preservó de la lógica de sumas y porcentajes. Esto se demuestra mediante la caracterización con Jest en la Etapa 2: Los `test.todo` en 13 pruebas reales en `pedidoService.test.js` y `modelos.test.js`. Todos los tests mantuvieron el exito antes, durante y después de la refactorización.
+- **Cambios de comportamiento acordados, si los hubo:**
+  No hubo cambios en las reglas de negocio; la refactorización fue solamente en la estructura.
+- **Como ejecutar la aplicacion y los tests:**
+
+1. Instalar dependencias: `npm install`
+2. Ejecutar la aplicación: `npm run dev`
+3. Ejecutar la suite de tests: `npm test`
