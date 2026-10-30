@@ -1,11 +1,14 @@
 export class PedidoService {
   // DIP
   constructor(repositorio, notificador, descuentos, envios) {
-    this.pedidos = [];
     this.repositorio = repositorio;
     this.notificador = notificador;
     this.descuentos = descuentos;
     this.envios = envios;
+  }
+
+  get pedidos() {
+    return this.repositorio.obtenerTodos();
   }
 
   registrar(pedido, tipoCliente, tipoEnvio) {
@@ -27,7 +30,6 @@ export class PedidoService {
     }
 
     total += costoEnvio;
-    this.pedidos.push({ pedido, total });
 
     // SRP: responsabilidad a la clase correspondiente.
     this.repositorio.guardar(pedido, total);
